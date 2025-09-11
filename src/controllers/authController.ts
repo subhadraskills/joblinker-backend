@@ -10,13 +10,12 @@ const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
 // Signup
 export const signup = async (req: Request, res: Response) => {
   try {
-    console.log("REQ BODY ===>", req.body);
-     console.log("HEADERS ===>", req.headers);
+  
     const { name, email, password } = req.body;
     if (!name || !email || !password) {
       return res.status(400).json({ success: false, message: "All fields are required" });
     }
-
+    console.log(name,email,password);  
     const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) {
       return res.status(400).json({ success: false, message: "Email already exists" });
@@ -25,21 +24,14 @@ export const signup = async (req: Request, res: Response) => {
     const hashed = await bcrypt.hash(password, 10);
 
     const user = await prisma.user.create({
-      data: { name, email, password: hashed },
-      select: { id: true, name: true, email: true },
+      data: { name, email, password: hashed }
     });
 
-    const token = jwt.sign(
-      { userId: user.id, email: user.email },
-      JWT_SECRET,
-      { expiresIn: "1d" }
-    );
+    
 
     return res.status(201).json({
       success: true,
-      message: "Signup successful",
-      token,
-      user,
+      message: "Signup successful"   
     });
   } catch (err: any) {
     console.error(err);
@@ -51,20 +43,21 @@ export const signup = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
+    console.log(email,password)
     if (!email || !password) {
       return res.status(400).json({ success: false, message: "All fields are required" });
     }
 
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
-      return res.status(400).json({ success: false, message: "Invalid email or password" });
+      return res.status(400).json({ success: false, message: "User have not signup" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ success: false, message: "Invalid email or password" });
+      return res.status(400).json({ success: false, message: "user password is wrong" });
     }
-
+      
     const token = jwt.sign(
       { userId: user.id, email: user.email },
       JWT_SECRET,
