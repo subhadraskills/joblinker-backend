@@ -8,7 +8,7 @@ const router = Router();
 
 router.post("/", auth, addJob);          
 router.get("/", auth, getJobs);          
-router.put("/:id", auth, updateJob);     
-router.delete("/:id", auth, deleteJob);   
-
-export default router;
+router.put("/:id/:ownerId", auth, updateJob);        
+router.delete("/:id/:ownerId", auth, deleteJob);        
+    
+export default router;   

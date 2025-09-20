@@ -13,9 +13,6 @@ model User {
   name      String
   email     String    @unique
   password  String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-
   jobLinks  JobLink[]   
 }
 
@@ -27,3 +24,5 @@ model JobLink {
 
   owner     User     @relation(fields: [ownerId], references: [id])
 }
+
+
