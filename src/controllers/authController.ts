@@ -49,14 +49,18 @@ export const login = async (req: Request, res: Response) => {
     }
 
     const user = await prisma.user.findUnique({ where: { email } });
+    console.log("user found:", user);
+
     if (!user) {
       return res.status(400).json({ success: false, message: "User have not signup" });
     }
+    
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ success: false, message: "user password is wrong" });
     }
+   
       
     const token = jwt.sign(
       { userId: user.id, email: user.email },
