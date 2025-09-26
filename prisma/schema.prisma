@@ -13,9 +13,7 @@ model User {
   name      String
   email     String    @unique
   password  String
-  jobLinks  JobLink[]   
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt  
+  jobLinks  JobLink[]    
 }
 
 model JobLink {
@@ -24,7 +22,7 @@ model JobLink {
   ownerId   Int
   createdAt DateTime @default(now())
 
-  owner     User     @relation(fields: [ownerId], references: [id])
+  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 
